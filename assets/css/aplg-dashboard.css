@@ -1,0 +1,13 @@
+.path_to_aplg_logdir_class_wrap li {
+	padding: 2px;
+	clear: both;
+}
+
+.path_to_aplg_logdir_class_wrap li:hover {
+	background-color: yellow;
+}
+
+.path_to_aplg_logdir_class_wrap .delete_btn {
+	/*padding-left: 3em;*/
+	float: right;
+}
