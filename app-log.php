@@ -37,7 +37,7 @@ class App_Log {
 		require_once plugin_dir_path( __FILE__ ) . 'app-log-samples.php';
 
 		// Load text domain
-		add_action( 'init', array( $this, 'load_aplg_textdomain' ) ); 
+		add_action( 'init', array( $this, 'load_aplg_textdomain' ) );
 		// Allow other plugins to output log using 'app_log' hook
 		add_action( 'app_log', array( 'Aplg_Logger', 'log' ), 10 );
 	}

@@ -76,7 +76,7 @@ class Aplg_Settings {
 	 * Displays log directory field
 	 */
 	public function render_log_directory_setting_field() {
-		echo '<input type="text" name="aplg_settings[log_directory]" value="' . self::get_path_to_logdir() . '" style="width: 75%">';
+		echo '<input type="text" name="aplg_settings[log_directory]" value="' . esc_attr( self::get_path_to_logdir() ) . '" style="width: 75%">';
 	}
 
 	/**

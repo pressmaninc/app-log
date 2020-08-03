@@ -26,17 +26,17 @@ class Aplg_Logger {
 		$message  = date_i18n( 'Y-m-d H:i:s' ) . ' ' . $message . "\n";
 		$filename = date_i18n( 'Ymd' ) . '.log';
 		$log_dir  = Aplg_Settings::get_path_to_logdir( $dirname );
-		$log_file = $log_dir . $filename;
 
 		// Create directory if it doesn't exist
-		if ( ! file_exists( $log_dir ) || ! is_dir( $log_dir ) ) {
+		if ( realpath( $log_dir ) === FALSE || ! is_dir( $log_dir ) ) {
 			$flag = mkdir( $log_dir, 0777 );
 		}
 
 		// TODO: Add processing in the case when log directory creation fails
 
 		// Write to file
-		$fp = fopen( $log_file, 'a' );
+		$log_file = realpath( $log_dir ) . '/' . $filename;
+		$fp       = fopen( $log_file, 'a' );
 		fwrite( $fp, $message );
 		fclose( $fp );
 
@@ -79,20 +79,25 @@ class Aplg_Logger {
 	 * @return array
 	 */
 	public static function delete_log( $filename ) {
-		$path_to_file = Aplg_Settings::get_path_to_logdir() . $filename;
-		if ( is_file( $path_to_file ) ) {
-			$flag = unlink( $path_to_file );
-			if ( $flag ) {
-				return array(
-					'type'    => 'success',
-					'message' => sprintf( __( '%s successfully deleted.', 'aplg' ), $filename ),
-				);
-			} else {
-				return array(
-					'type'    => 'error',
-					'message' => __( 'Failed to delete log.', 'aplg' ),
-				);
-			}
+		$path_to_file = realpath( Aplg_Settings::get_path_to_logdir() ) . '/' . $filename;
+		if ( ! is_file( $path_to_file ) ) {
+			return array(
+				'type'    => 'error',
+				'message' => __( 'Failed to delete log.', 'aplg' ),
+			);
+		}
+
+		$flag = unlink( $path_to_file );
+		if ( $flag ) {
+			return array(
+				'type'    => 'success',
+				'message' => sprintf( __( '%s successfully deleted.', 'aplg' ), $filename ),
+			);
+		} else {
+			return array(
+				'type'    => 'error',
+				'message' => __( 'Failed to delete log.', 'aplg' ),
+			);
 		}
 	}
 }

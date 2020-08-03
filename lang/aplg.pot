@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2020-07-29T02:35:19+00:00\n"
-"PO-Revision-Date: 2020-07-30T02:48:26+00:00\n"
+"PO-Revision-Date: 2020-08-03T04:32:45+00:00\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: aplg\n"
 
@@ -32,36 +32,36 @@ msgstr ""
 msgid "https://www.pressman.ne.jp/"
 msgstr ""
 
-#: admin/aplg-dashboard.php:61
+#: admin/aplg-dashboard.php:64
 msgid "File will be deleted. Are you sure you want to proceed?"
 msgstr ""
 
-#: admin/aplg-dashboard.php:77
+#: admin/aplg-dashboard.php:81
 msgid "Delete"
 msgstr ""
 
-#: admin/aplg-dashboard.php:106
+#: admin/aplg-dashboard.php:112
 msgid "Log File List"
 msgstr ""
 
-#: admin/aplg-dashboard.php:107
+#: admin/aplg-dashboard.php:112
 msgid "Path"
 msgstr ""
 
-#: admin/aplg-dashboard.php:145
+#: admin/aplg-dashboard.php:147
 msgid "Set path to where the application logs are stored"
 msgstr ""
 
-#: admin/aplg-dashboard.php:151
+#: admin/aplg-dashboard.php:153
 msgid "※No need to set if default path will be used. (Default Path: %s)"
 msgstr ""
 
-#: admin/aplg-dashboard.php:181
+#: admin/aplg-dashboard.php:185
 msgid "Invalid access"
 msgstr ""
 
-#: admin/aplg-dashboard.php:217
-#: classes/class-aplg-logger.php:88
+#: admin/aplg-dashboard.php:225
+#: classes/class-aplg-logger.php:94
 msgid "%s successfully deleted."
 msgstr ""
 
@@ -78,6 +78,7 @@ msgstr ""
 msgid "Enable/Disable Mail Log"
 msgstr ""
 
-#: classes/class-aplg-logger.php:93
+#: classes/class-aplg-logger.php:86
+#: classes/class-aplg-logger.php:99
 msgid "Failed to delete log."
 msgstr ""

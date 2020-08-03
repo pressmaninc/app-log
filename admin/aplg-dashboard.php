@@ -56,19 +56,23 @@ class Aplg_Dashboard {
 	 */
 	public function display_log_widget() {
 		// Include javascript file for dashbord
-		wp_enqueue_script( 'aplg-dashboard', plugin_dir_url( __DIR__ ) . 'assets/js/aplg-dashboard.js' , array( 'jquery' ), null, true );
-		wp_localize_script( 'aplg-dashboard', 'aplg_dashboard_obj', array (
-			'delete_confirm_message' => __( 'File will be deleted. Are you sure you want to proceed?', 'aplg' ),
-		));
+		wp_enqueue_script( 'aplg-dashboard', plugin_dir_url( __DIR__ ) . 'assets/js/aplg-dashboard.js', array( 'jquery' ), null, true );
+		wp_localize_script(
+			'aplg-dashboard',
+			'aplg_dashboard_obj',
+			array(
+				'delete_confirm_message' => __( 'File will be deleted. Are you sure you want to proceed?', 'aplg' ),
+			)
+		);
 		// Include css file for dashboard
 		wp_enqueue_style( 'aplg-dashboard', plugin_dir_url( __DIR__ ) . 'assets/css/aplg-dashboard.css' );
 
-		$path_to_log_dir = Aplg_Settings::get_path_to_logdir();
+		$path_to_log_dir = realpath( Aplg_Settings::get_path_to_logdir() );
 		$list_html       = '';
 		// Link to the actual file
 		$url_to_log_dir = '';
-		if ( strpos( $path_to_log_dir, ABSPATH ) === 0 ) {
-			$url_to_log_dir = str_replace( ABSPATH, home_url( '/' ), $path_to_log_dir );
+		if ( $path_to_log_dir !== FALSE && strpos( $path_to_log_dir, ABSPATH ) === 0 ) {
+			$url_to_log_dir = str_replace( ABSPATH, home_url( '/' ), $path_to_log_dir . '/' );
 		}
 
 		// Link for file deletion
@@ -76,7 +80,7 @@ class Aplg_Dashboard {
 
 		$delete_label = __( 'Delete', 'aplg' );
 
-		if ( $path_to_log_dir != '' && file_exists( $path_to_log_dir ) ) {
+		if ( $path_to_log_dir !== FALSE && file_exists( $path_to_log_dir ) ) {
 			$files = scandir( $path_to_log_dir );
 			$list  = array();
 			foreach ( $files as $file ) {
@@ -103,11 +107,9 @@ class Aplg_Dashboard {
 	 * Displays widget
 	 */
 	public function create_widget( $list_html, $log_dir ) {
-		$list_header            = __( 'Log File List', 'aplg' );
-		$path_label             = __( 'Path', 'aplg' );
 		?>
 		<div class='path_to_aplg_logdir_class_wrap'>
-			<p><?php echo $list_header; ?><br/>(<?php echo $path_label . ': ' . $log_dir; ?>)</p>
+			<p><?php _e( 'Log File List', 'aplg' ); ?><br/>(<?php echo __( 'Path', 'aplg' ) . ': ' . esc_html( $log_dir ); ?>)</p>
 			<ul>
 				<?php echo $list_html; ?>
 			</ul>
@@ -127,7 +129,7 @@ class Aplg_Dashboard {
 		// process update
 		if ( 'POST' == $_SERVER['REQUEST_METHOD'] && isset( $_POST['aplg_settings'] ) ) {
 			// minor validation
-			$widget_options['log_directory'] = $_POST['aplg_settings']['log_directory'];
+			$widget_options['log_directory'] = sanitize_text_field( $_POST['aplg_settings']['log_directory'] );
 			// save update
 			update_option( 'aplg_settings', $widget_options );
 		}
@@ -139,17 +141,17 @@ class Aplg_Dashboard {
 
 		$output = sprintf(
 			'<input type="text" value="%s" name="aplg_settings[log_directory]" style="width:100%%">',
-			$widget_options['log_directory']
+			esc_attr( $widget_options['log_directory'] )
 		);
 
-		$configuration_description = __( 'Set path to where the application logs are stored', 'aplg' ); // app_logのログがある場所へのパスを設定
+		$configuration_description = __( 'Set path to where the application logs are stored', 'aplg' );
 		echo "<p><strong>$configuration_description</strong><br/ >";
 
 		if ( $widget_options['log_directory'] == '' ) {
-			$path_to_log_dir = Aplg_Settings::get_path_to_logdir();
+			$path_to_log_dir = realpath( Aplg_Settings::get_path_to_logdir() );
 			echo sprintf(
 				__( '※No need to set if default path will be used. (Default Path: %s)', 'aplg' ),
-				$path_to_log_dir
+				esc_html( $path_to_log_dir )
 			);
 		}
 
@@ -163,6 +165,7 @@ class Aplg_Dashboard {
 	 */
 	public function delete_log() {
 		$delete_result = array();
+
 		if ( ! current_user_can( 'administrator' ) ) {
 			return;
 		}
@@ -175,6 +178,7 @@ class Aplg_Dashboard {
 			return;
 		}
 
+		$log_for_deletion = $_GET[ Aplg_Settings::DELETE_KEY ];
 		if ( ! wp_verify_nonce( $_GET['_wpnonce'], Aplg_Settings::DELETE_KEY ) ) {
 			$delete_result = array(
 				'type'    => 'error',
@@ -182,12 +186,12 @@ class Aplg_Dashboard {
 			);
 		} // Valid access
 		else {
-			$delete_result = Aplg_Logger::delete_log( $_GET[ Aplg_Settings::DELETE_KEY ] );
+			$delete_result = Aplg_Logger::delete_log( urldecode( $log_for_deletion ) );
 		}
 
 		if ( is_array( $delete_result ) && count( $delete_result ) > 0 ) {
 			if ( 'success' === $delete_result['type'] ) {
-				wp_redirect( admin_url( '/?' . Aplg_Settings::DELETE_KEY . '_done=' . $_GET[ Aplg_Settings::DELETE_KEY ] ), 302 );// To avoid multiple deletion
+				wp_redirect( admin_url( '/?' . Aplg_Settings::DELETE_KEY . '_done=' . $log_for_deletion ), 302 ); // To avoid multiple deletion
 			} else {
 				self::$notices = (array) $delete_result;
 				add_action( 'admin_notices', array( $this, 'display_notice' ), 10 );
@@ -207,17 +211,20 @@ class Aplg_Dashboard {
 			return;
 		}
 
-		$success_flag = Aplg_Settings::DELETE_KEY . '_done';
-
-		if ( isset( $_GET[ $success_flag ] ) && $_GET[ $success_flag ] != '' ) {
-			$file_path = Aplg_Settings::get_path_to_logdir() . $_GET[ Aplg_Settings::DELETE_KEY . '_done' ];
-			if ( ! file_exists( $file_path ) ) {
-				self::$notices = array(
-					'type'    => 'success',
-					'message' => sprintf( __( '%s successfully deleted.', 'aplg' ), $_GET[ Aplg_Settings::DELETE_KEY . '_done' ] ),
-				);
-				add_action( 'admin_notices', array( $this, 'display_notice' ), 10 );
-			}
+		if ( ! isset( $_GET [ Aplg_Settings::DELETE_KEY . '_done' ]) || $_GET [ Aplg_Settings::DELETE_KEY . '_done' ] == '' ) {
+			return;
+		}
+		
+		$deleted_log = urldecode( $_GET [ Aplg_Settings::DELETE_KEY . '_done' ] );
+		//Data from GET not sanitized but decoded instead since the correct filename is needed to confirm if file is correctly deleted or not
+		$log_dir     = realpath( Aplg_Settings::get_path_to_logdir() );
+		$file_path   =  $log_dir . '/' . $deleted_log;
+		if ( $log_dir !== FALSE && ! file_exists( $file_path ) ) {
+			self::$notices = array(
+				'type'    => 'success',
+				'message' => sprintf( __( '%s successfully deleted.', 'aplg' ), esc_html( $deleted_log ) ),
+			);
+			add_action( 'admin_notices', array( $this, 'display_notice' ), 10 );
 		}
 	}
 
@@ -226,8 +233,8 @@ class Aplg_Dashboard {
 	 */
 	public function display_notice() {
 		?>
-		<div class="notice notice-<?php echo self::$notices['type']; ?>">
-			<p><?php echo self::$notices['message']; ?></p>
+		<div class="notice notice-<?php echo self::$notices[ 'type' ]; ?>">
+			<p><?php echo self::$notices[ 'message' ]; ?></p>
 		</div>
 		<?php
 		self::$notices = array();
