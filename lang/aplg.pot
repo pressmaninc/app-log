@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the App Log plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: App Log 1.0\n"
+"Project-Id-Version: App Log 1.01\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/app-log\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2020-07-29T02:35:19+00:00\n"
-"PO-Revision-Date: 2020-08-03T04:32:45+00:00\n"
+"PO-Revision-Date: 2020-08-04T05:31:28+00:00\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: aplg\n"
 
@@ -36,31 +36,35 @@ msgstr ""
 msgid "File will be deleted. Are you sure you want to proceed?"
 msgstr ""
 
-#: admin/aplg-dashboard.php:81
+#: admin/aplg-dashboard.php:83
 msgid "Delete"
 msgstr ""
 
-#: admin/aplg-dashboard.php:112
+#: admin/aplg-dashboard.php:105
+msgid "No logs found."
+msgstr ""
+
+#: admin/aplg-dashboard.php:117
 msgid "Log File List"
 msgstr ""
 
-#: admin/aplg-dashboard.php:112
+#: admin/aplg-dashboard.php:117
 msgid "Path"
 msgstr ""
 
-#: admin/aplg-dashboard.php:147
+#: admin/aplg-dashboard.php:152
 msgid "Set path to where the application logs are stored"
 msgstr ""
 
-#: admin/aplg-dashboard.php:153
+#: admin/aplg-dashboard.php:159
 msgid "※No need to set if default path will be used. (Default Path: %s)"
 msgstr ""
 
-#: admin/aplg-dashboard.php:185
+#: admin/aplg-dashboard.php:191
 msgid "Invalid access"
 msgstr ""
 
-#: admin/aplg-dashboard.php:225
+#: admin/aplg-dashboard.php:231
 #: classes/class-aplg-logger.php:94
 msgid "%s successfully deleted."
 msgstr ""

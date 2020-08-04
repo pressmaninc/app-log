@@ -2,7 +2,7 @@
 Contributors: pressmaninc, hiroshisekiguchi, kazunao, muraokashotaro, razelpaldo
 Tags: pressman, debug, log
 Requires at least: 5.2.2
-Tested up to: 5.2.2
+Tested up to: 5.4.2
 Requires PHP: 5.6.20
 Stable tag:　1.0
 License: GPLv2 or later

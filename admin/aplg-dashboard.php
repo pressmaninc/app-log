@@ -67,20 +67,21 @@ class Aplg_Dashboard {
 		// Include css file for dashboard
 		wp_enqueue_style( 'aplg-dashboard', plugin_dir_url( __DIR__ ) . 'assets/css/aplg-dashboard.css' );
 
-		$path_to_log_dir = realpath( Aplg_Settings::get_path_to_logdir() );
+		$path_to_log_dir = Aplg_Settings::get_path_to_logdir();
+		$path_to_log_dir = realpath( $path_to_log_dir ) ?: $path_to_log_dir;
 		$list_html       = '';
-		// Link to the actual file
-		$url_to_log_dir = '';
-		if ( $path_to_log_dir !== FALSE && strpos( $path_to_log_dir, ABSPATH ) === 0 ) {
-			$url_to_log_dir = str_replace( ABSPATH, home_url( '/' ), $path_to_log_dir . '/' );
-		}
-
-		// Link for file deletion
-		$url_for_delete_log_dir = wp_nonce_url( admin_url( '/' ), Aplg_Settings::DELETE_KEY ) . '&' . Aplg_Settings::DELETE_KEY . '=';
-
-		$delete_label = __( 'Delete', 'aplg' );
 
 		if ( $path_to_log_dir !== FALSE && file_exists( $path_to_log_dir ) ) {
+			// Link to the actual file
+			$url_to_log_dir = '';
+			if ( strpos( $path_to_log_dir, ABSPATH ) === 0 ) {
+				$url_to_log_dir = str_replace( ABSPATH, home_url( '/' ), $path_to_log_dir . '/' );
+			}
+
+			// Link for file deletion
+			$url_for_delete_log_dir = wp_nonce_url( admin_url( '/' ), Aplg_Settings::DELETE_KEY ) . '&' . Aplg_Settings::DELETE_KEY . '=';
+			$delete_label = __( 'Delete', 'aplg' );
+
 			$files = scandir( $path_to_log_dir );
 			$list  = array();
 			foreach ( $files as $file ) {
@@ -99,6 +100,10 @@ class Aplg_Dashboard {
 			}
 			$list_html = implode( "\n", $list );
 		}
+
+		if ( $list_html === '' ) {
+			$list_html = '<span>' . __( 'No logs found.', 'aplg' ) . '</span>';
+		} 
 
 		self::create_widget( $list_html, $path_to_log_dir );
 	}
@@ -148,7 +153,8 @@ class Aplg_Dashboard {
 		echo "<p><strong>$configuration_description</strong><br/ >";
 
 		if ( $widget_options['log_directory'] == '' ) {
-			$path_to_log_dir = realpath( Aplg_Settings::get_path_to_logdir() );
+			$path_to_log_dir = Aplg_Settings::get_path_to_logdir();
+			$path_to_log_dir = realpath( $path_to_log_dir ) ?: $path_to_log_dir;
 			echo sprintf(
 				__( '※No need to set if default path will be used. (Default Path: %s)', 'aplg' ),
 				esc_html( $path_to_log_dir )
