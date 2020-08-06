@@ -23,9 +23,9 @@ There are 2 ways to use the plugin
 	By calling any of the functions above, the message will written to the log file.\
 	For example, `applog( 'Hello' ) ` will output 'Hello' with TRACE log level in the log file
 
-2. Use the 'app_log' hook\
+2. Use the 'applog' hook\
 	If another plugin will use this to output logs, it is best to use this option instead of calling `applog` function to avoid Fatal Error in case this plugin is deactivated.\
-	`do_action( 'app_log' , 'Hello' )` will output 'Hello' with TRACE log level in the log file
+	`do_action( 'applog' , 'Hello' )` will output 'Hello' with TRACE log level in the log file
 
 Log files are listed on the Administrator Dashboard page for easier viewing and deleting.
 

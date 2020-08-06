@@ -36,8 +36,8 @@ class App_Log {
 
 		// Load text domain
 		add_action( 'init', array( $this, 'load_aplg_textdomain' ), 10 );
-		// Allow other plugins to output log using 'app_log' hook
-		add_action( 'app_log', array( 'Aplg_Logger', 'log' ), 10, 3 );
+		// Allow other plugins to output log using 'applog' hook
+		add_action( 'applog', array( 'Aplg_Logger', 'log' ), 10, 3 );
 	}
 
 	/**
