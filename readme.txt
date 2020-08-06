@@ -4,7 +4,7 @@ Tags: pressman, debug, log
 Requires at least: 5.2.2
 Tested up to: 5.4.2
 Requires PHP: 5.6.20
-Stable tag:　1.0
+Stable tag:　1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,5 +20,8 @@ By default, log files are stored in */wp-content/plugins/app-log/applog* but log
 2. Activate the plugin through the Plugins menu in WordPress.
 
 == Changelog ==
+＝ 1.1 =
+* added log level
+
 = 1.0 =
 * first version.

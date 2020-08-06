@@ -17,14 +17,21 @@ class Aplg_Logger {
 	 * @param mixed  $message
 	 * @param string $dirname
 	 */
-	public static function log( $message, $dirname = '' ) {
+	public static function log( $message, $dirname = '', $log_level = 'TRACE' ) {
 
 		if ( ! is_string( $message ) ) {
 			$message = print_r( $message, true );
 		}
 
-		$message  = date_i18n( 'Y-m-d H:i:s' ) . ' ' . $message . "\n";
-		$filename = date_i18n( 'Ymd' ) . '.log';
+		$log_message = '[' . date_i18n( 'Y-m-d H:i:s' ) . '] [' . str_pad( $log_level, 5, ' ' ) . '] ';
+		$process_id  = getmypid();
+		if ( $process_id ) {
+			$log_message .= '(Process ID: ' . $process_id . ') ';
+		}
+		$log_message .= $message . "\n";
+		$log_file_ext = apply_filters( 'app_log_file_ext', '.log' );
+
+		$filename = date_i18n( 'Ymd' ) . $log_file_ext;
 		$log_dir  = Aplg_Settings::get_path_to_logdir( $dirname );
 
 		// Create directory if it doesn't exist
@@ -37,7 +44,7 @@ class Aplg_Logger {
 		// Write to file
 		$log_file = realpath( $log_dir ) . '/' . $filename;
 		$fp       = fopen( $log_file, 'a' );
-		fwrite( $fp, $message );
+		fwrite( $fp, $log_message );
 		fclose( $fp );
 
 		// Delete old logs in bulk (for garbage collection)

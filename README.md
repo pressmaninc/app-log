@@ -7,13 +7,25 @@ App Log is a Wordpress plugin that allows users (mainly developers) to output lo
 
 # How to use
 There are 2 ways to use the plugin
-1. Call the ready-to-use applog function\
-	By calling the function `applog`, the message will written to the log file.\
-	`applog( 'Hello' ) ` will output 'Hello' in the log file
+1. Call the ready-to-use functions below
+   - `applog( message, directory, log level )`
+   - `applog_trace( message, directory )`
+   - `applog_debug( message, directory )`
+   - `applog_info( message, directory )`
+   - `applog_warn( message, directory )`
+   - `applog_error( message, directory )`
+   - `applog_fatal( message, directory )`
+
+  	The directory parameter refers to a subdirectory inside the plugin directory. Default value is empty. If it is empty, log will be stored in the log directory path displayed in the settings page.
+
+	The log level parameter in the `applog` function has a default value of 'TRACE'. If no value or an invalid value is passed, log level is automatically set to 'TRACE'.
+
+	By calling any of the functions above, the message will written to the log file.\
+	For example, `applog( 'Hello' ) ` will output 'Hello' with TRACE log level in the log file
 
 2. Use the 'app_log' hook\
 	If another plugin will use this to output logs, it is best to use this option instead of calling `applog` function to avoid Fatal Error in case this plugin is deactivated.\
-	`do_action( 'app_log' , 'Hello' )` will output 'Hello' in the log file
+	`do_action( 'app_log' , 'Hello' )` will output 'Hello' with TRACE log level in the log file
 
 Log files are listed on the Administrator Dashboard page for easier viewing and deleting.
 
