@@ -10,6 +10,14 @@ if ( ! class_exists( 'Aplg_Settings' ) ) {
 
 class Aplg_Logger {
 	const LOG_AUTO_DELETE_PROBABILITY = 10; // Auto-delete will be run within 10% probability
+	const LOG_LEVEL                   = array(
+		'TRACE_LOG' => 'TRACE',
+		'DEBUG_LOG' => 'DEBUG',
+		'INFO_LOG'  => 'INFO',
+		'WARN_LOG'  => 'WARN',
+		'ERROR_LOG' => 'ERROR',
+		'FATAL_LOG' => 'FATAL',
+	);
 
 	/**
 	 * Outputs log to the specified directory
@@ -17,7 +25,10 @@ class Aplg_Logger {
 	 * @param mixed  $message
 	 * @param string $dirname
 	 */
-	public static function log( $message, $dirname = '', $log_level = 'TRACE' ) {
+	public static function log( $message, $dirname = '', $log_level = self::LOG_LEVEL['TRACE_LOG'] ) {
+		if ( ! in_array( $log_level, array_values( self::LOG_LEVEL ) ) ) {
+			$log_level = self::LOG_LEVEL['TRACE_LOG'];
+		}
 
 		if ( ! is_string( $message ) ) {
 			$message = print_r( $message, true );
@@ -35,7 +46,7 @@ class Aplg_Logger {
 		$log_dir  = Aplg_Settings::get_path_to_logdir( $dirname );
 
 		// Create directory if it doesn't exist
-		if ( realpath( $log_dir ) === FALSE || ! is_dir( $log_dir ) ) {
+		if ( realpath( $log_dir ) === false || ! is_dir( $log_dir ) ) {
 			$flag = mkdir( $log_dir, 0777 );
 		}
 

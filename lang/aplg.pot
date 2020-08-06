@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2020-07-29T02:35:19+00:00\n"
-"PO-Revision-Date: 2020-08-06T03:02:57+00:00\n"
+"PO-Revision-Date: 2020-08-06T07:25:36+00:00\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: aplg\n"
 
@@ -65,7 +65,7 @@ msgid "Invalid access"
 msgstr ""
 
 #: admin/aplg-dashboard.php:231
-#: classes/class-aplg-logger.php:101
+#: classes/class-aplg-logger.php:112
 msgid "%s successfully deleted."
 msgstr ""
 
@@ -82,7 +82,7 @@ msgstr ""
 msgid "Enable/Disable Mail Log"
 msgstr ""
 
-#: classes/class-aplg-logger.php:93
-#: classes/class-aplg-logger.php:106
+#: classes/class-aplg-logger.php:104
+#: classes/class-aplg-logger.php:117
 msgid "Failed to delete log."
 msgstr ""

@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once dirname( __FILE__ ) . '/applog-functions.php';
+require_once dirname( __FILE__ ) . '/app-log-functions.php';
 
 /**
  * Class App_Log

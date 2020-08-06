@@ -71,7 +71,7 @@ class Aplg_Dashboard {
 		$path_to_log_dir = realpath( $path_to_log_dir ) ?: $path_to_log_dir;
 		$list_html       = '';
 
-		if ( $path_to_log_dir !== FALSE && file_exists( $path_to_log_dir ) ) {
+		if ( $path_to_log_dir !== false && file_exists( $path_to_log_dir ) ) {
 			// Link to the actual file
 			$url_to_log_dir = '';
 			if ( strpos( $path_to_log_dir, ABSPATH ) === 0 ) {
@@ -80,7 +80,7 @@ class Aplg_Dashboard {
 
 			// Link for file deletion
 			$url_for_delete_log_dir = wp_nonce_url( admin_url( '/' ), Aplg_Settings::DELETE_KEY ) . '&' . Aplg_Settings::DELETE_KEY . '=';
-			$delete_label = __( 'Delete', 'aplg' );
+			$delete_label           = __( 'Delete', 'aplg' );
 
 			$files = scandir( $path_to_log_dir );
 			$list  = array();
@@ -103,7 +103,7 @@ class Aplg_Dashboard {
 
 		if ( $list_html === '' ) {
 			$list_html = '<span>' . __( 'No logs found.', 'aplg' ) . '</span>';
-		} 
+		}
 
 		self::create_widget( $list_html, $path_to_log_dir );
 	}
@@ -217,15 +217,15 @@ class Aplg_Dashboard {
 			return;
 		}
 
-		if ( ! isset( $_GET [ Aplg_Settings::DELETE_KEY . '_done' ]) || $_GET [ Aplg_Settings::DELETE_KEY . '_done' ] == '' ) {
+		if ( ! isset( $_GET [ Aplg_Settings::DELETE_KEY . '_done' ] ) || $_GET [ Aplg_Settings::DELETE_KEY . '_done' ] == '' ) {
 			return;
 		}
-		
+
 		$deleted_log = urldecode( $_GET [ Aplg_Settings::DELETE_KEY . '_done' ] );
-		//Data from GET not sanitized but decoded instead since the correct filename is needed to confirm if file is correctly deleted or not
-		$log_dir     = realpath( Aplg_Settings::get_path_to_logdir() );
-		$file_path   =  $log_dir . '/' . $deleted_log;
-		if ( $log_dir !== FALSE && ! file_exists( $file_path ) ) {
+		// Data from GET not sanitized but decoded instead since the correct filename is needed to confirm if file is correctly deleted or not
+		$log_dir   = realpath( Aplg_Settings::get_path_to_logdir() );
+		$file_path = $log_dir . '/' . $deleted_log;
+		if ( $log_dir !== false && ! file_exists( $file_path ) ) {
 			self::$notices = array(
 				'type'    => 'success',
 				'message' => sprintf( __( '%s successfully deleted.', 'aplg' ), esc_html( $deleted_log ) ),
@@ -239,8 +239,8 @@ class Aplg_Dashboard {
 	 */
 	public function display_notice() {
 		?>
-		<div class="notice notice-<?php echo self::$notices[ 'type' ]; ?>">
-			<p><?php echo self::$notices[ 'message' ]; ?></p>
+		<div class="notice notice-<?php echo self::$notices['type']; ?>">
+			<p><?php echo self::$notices['message']; ?></p>
 		</div>
 		<?php
 		self::$notices = array();
