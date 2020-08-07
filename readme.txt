@@ -20,8 +20,9 @@ By default, log files are stored in */wp-content/plugins/app-log/applog* but log
 2. Activate the plugin through the Plugins menu in WordPress.
 
 == Changelog ==
-＝ 1.1 =
+= 1.1 =
 * added log level
+* changed hook name from app_log to applog
 
 = 1.0 =
 * first version.
