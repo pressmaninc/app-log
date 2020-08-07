@@ -10,6 +10,18 @@ if ( ! class_exists( 'Aplg_Settings' ) ) {
 
 class Aplg_Logger {
 	const LOG_AUTO_DELETE_PROBABILITY = 10; // Auto-delete will be run within 10% probability
+	const LOG_LEVEL                   = array(
+		'TRACE_LOG' => 'TRACE',
+		'DEBUG_LOG' => 'DEBUG',
+		'INFO_LOG'  => 'INFO',
+		'WARN_LOG'  => 'WARN',
+		'ERROR_LOG' => 'ERROR',
+		'FATAL_LOG' => 'FATAL',
+	);
+	const ALLOWED_FILE_EXT            = array(
+		'LOG' => '.log',
+		'TXT' => '.txt',
+	);
 
 	/**
 	 * Outputs log to the specified directory
@@ -17,18 +29,34 @@ class Aplg_Logger {
 	 * @param mixed  $message
 	 * @param string $dirname
 	 */
-	public static function log( $message, $dirname = '' ) {
+	public static function log( $message, $dirname = '', $log_level = self::LOG_LEVEL['TRACE_LOG'] ) {
+		if ( ! in_array( $log_level, array_values( self::LOG_LEVEL ) ) ) {
+			$log_level = self::LOG_LEVEL['TRACE_LOG'];
+		}
 
 		if ( ! is_string( $message ) ) {
 			$message = print_r( $message, true );
 		}
 
-		$message  = date_i18n( 'Y-m-d H:i:s' ) . ' ' . $message . "\n";
-		$filename = date_i18n( 'Ymd' ) . '.log';
+		$log_message = '[' . date_i18n( 'Y-m-d H:i:s' ) . '] [' . str_pad( $log_level, 5, ' ' ) . '] ';
+		$process_id  = getmypid();
+		if ( $process_id ) {
+			$log_message .= '(Process ID: ' . $process_id . ') ';
+		}
+		$log_message .= $message . "\n";
+		$log_file_ext = apply_filters( 'app_log_file_ext', self::ALLOWED_FILE_EXT['LOG'] );
+		if ( strpos( $log_file_ext, '.' ) !== 0 ) {
+			$log_file_ext = '.' . $log_file_ext;
+		}
+		if ( ! in_array( $log_file_ext, self::ALLOWED_FILE_EXT ) ) {
+			$log_file_ext = self::ALLOWED_FILE_EXT['LOG'];
+		}
+
+		$filename = date_i18n( 'Ymd' ) . $log_file_ext;
 		$log_dir  = Aplg_Settings::get_path_to_logdir( $dirname );
 
 		// Create directory if it doesn't exist
-		if ( realpath( $log_dir ) === FALSE || ! is_dir( $log_dir ) ) {
+		if ( realpath( $log_dir ) === false || ! is_dir( $log_dir ) ) {
 			$flag = mkdir( $log_dir, 0777 );
 		}
 
@@ -37,7 +65,7 @@ class Aplg_Logger {
 		// Write to file
 		$log_file = realpath( $log_dir ) . '/' . $filename;
 		$fp       = fopen( $log_file, 'a' );
-		fwrite( $fp, $message );
+		fwrite( $fp, $log_message );
 		fclose( $fp );
 
 		// Delete old logs in bulk (for garbage collection)

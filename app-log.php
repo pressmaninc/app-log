@@ -3,7 +3,7 @@
 Plugin Name: App Log
 Plugin URI:
 Description: A simple logger for debugging.
-Version: 1.0.1
+Version: 1.1
 Author: PRESSMAN
 Author URI: https://www.pressman.ne.jp/
 Text Domain: aplg
@@ -16,9 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-function applog( $message, $dirname = '' ) {
-	Aplg_Logger::log( $message, $dirname );
-}
+require_once dirname( __FILE__ ) . '/app-log-functions.php';
 
 /**
  * Class App_Log
@@ -37,9 +35,9 @@ class App_Log {
 		require_once plugin_dir_path( __FILE__ ) . 'app-log-samples.php';
 
 		// Load text domain
-		add_action( 'init', array( $this, 'load_aplg_textdomain' ) );
-		// Allow other plugins to output log using 'app_log' hook
-		add_action( 'app_log', array( 'Aplg_Logger', 'log' ), 10 );
+		add_action( 'init', array( $this, 'load_aplg_textdomain' ), 10 );
+		// Allow other plugins to output log using 'applog' hook
+		add_action( 'applog', array( 'Aplg_Logger', 'log' ), 10, 3 );
 	}
 
 	/**

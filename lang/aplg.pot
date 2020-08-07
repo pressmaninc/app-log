@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the App Log plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: App Log 1.01\n"
+"Project-Id-Version: App Log 1.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/app-log\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2020-07-29T02:35:19+00:00\n"
-"PO-Revision-Date: 2020-08-04T05:31:28+00:00\n"
+"PO-Revision-Date: 2020-08-07T06:01:23+00:00\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: aplg\n"
 
@@ -65,7 +65,7 @@ msgid "Invalid access"
 msgstr ""
 
 #: admin/aplg-dashboard.php:231
-#: classes/class-aplg-logger.php:94
+#: classes/class-aplg-logger.php:122
 msgid "%s successfully deleted."
 msgstr ""
 
@@ -82,7 +82,7 @@ msgstr ""
 msgid "Enable/Disable Mail Log"
 msgstr ""
 
-#: classes/class-aplg-logger.php:86
-#: classes/class-aplg-logger.php:99
+#: classes/class-aplg-logger.php:114
+#: classes/class-aplg-logger.php:127
 msgid "Failed to delete log."
 msgstr ""
