@@ -18,6 +18,10 @@ class Aplg_Logger {
 		'ERROR_LOG' => 'ERROR',
 		'FATAL_LOG' => 'FATAL',
 	);
+	const ALLOWED_FILE_EXT            = array(
+		'LOG' => '.log',
+		'TXT' => '.txt',
+	);
 
 	/**
 	 * Outputs log to the specified directory
@@ -40,7 +44,13 @@ class Aplg_Logger {
 			$log_message .= '(Process ID: ' . $process_id . ') ';
 		}
 		$log_message .= $message . "\n";
-		$log_file_ext = apply_filters( 'app_log_file_ext', '.log' );
+		$log_file_ext = apply_filters( 'app_log_file_ext', self::ALLOWED_FILE_EXT['LOG'] );
+		if ( strpos( $log_file_ext, '.' ) !== 0 ) {
+			$log_file_ext = '.' . $log_file_ext;
+		}
+		if ( ! in_array( $log_file_ext, self::ALLOWED_FILE_EXT ) ) {
+			$log_file_ext = self::ALLOWED_FILE_EXT['LOG'];
+		}
 
 		$filename = date_i18n( 'Ymd' ) . $log_file_ext;
 		$log_dir  = Aplg_Settings::get_path_to_logdir( $dirname );

@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2020-07-29T02:35:19+00:00\n"
-"PO-Revision-Date: 2020-08-06T07:25:36+00:00\n"
+"PO-Revision-Date: 2020-08-07T06:01:23+00:00\n"
 "X-Generator: Poedit 2.3.1\n"
 "X-Domain: aplg\n"
 "Last-Translator: \n"
@@ -65,7 +65,7 @@ msgstr "※デフォルト (%s) のままでよいなら設定しないこと"
 msgid "Invalid access"
 msgstr "不正なアクセス"
 
-#: admin/aplg-dashboard.php:231 classes/class-aplg-logger.php:112
+#: admin/aplg-dashboard.php:231 classes/class-aplg-logger.php:122
 msgid "%s successfully deleted."
 msgstr "%sを正常に削除されました。"
 
@@ -81,6 +81,6 @@ msgstr "ログ場所"
 msgid "Enable/Disable Mail Log"
 msgstr "メールログ　有効化・無効化"
 
-#: classes/class-aplg-logger.php:104 classes/class-aplg-logger.php:117
+#: classes/class-aplg-logger.php:114 classes/class-aplg-logger.php:127
 msgid "Failed to delete log."
 msgstr "削除処理は失敗しました。"

@@ -23,6 +23,7 @@ By default, log files are stored in */wp-content/plugins/app-log/applog* but log
 = 1.1 =
 * added log level
 * changed hook name from app_log to applog
+* added filter to allow changing of log file extension
 
 = 1.0 =
 * first version.
