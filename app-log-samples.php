@@ -32,7 +32,7 @@ class Aplg_Log_Samples {
 	 */
 	public function log_mail( $args ) {
 		$options = get_option( 'aplg_settings' );
-		if ( array_key_exists( 'enable_disable_maillog', $options ) && '1' === $options['enable_disable_maillog'] ) {
+		if ( $options && array_key_exists( 'enable_disable_maillog', $options ) && '1' === $options['enable_disable_maillog'] ) {
 			applog( $args['subject'] . '|' . $args['message'] );
 		}
 
