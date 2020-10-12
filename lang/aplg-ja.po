@@ -67,7 +67,7 @@ msgstr "不正なアクセス"
 
 #: admin/aplg-dashboard.php:231 classes/class-aplg-logger.php:122
 msgid "%s successfully deleted."
-msgstr "%sを削除されました。"
+msgstr "%sを削除しました。"
 
 #: admin/aplg-settings.php:37 admin/aplg-settings.php:53
 msgid "App Log Settings"
