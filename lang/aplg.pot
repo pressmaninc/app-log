@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the App Log plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: App Log 1.1\n"
+"Project-Id-Version: App Log 1.1.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/app-log\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2020-07-29T02:35:19+00:00\n"
-"PO-Revision-Date: 2020-08-07T06:01:23+00:00\n"
+"PO-Revision-Date: 2020-10-09T05:08:50+00:00\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: aplg\n"
 
@@ -79,7 +79,11 @@ msgid "Log Directory"
 msgstr ""
 
 #: admin/aplg-settings.php:68
-msgid "Enable/Disable Mail Log"
+msgid "Log emails sent by WordPress"
+msgstr ""
+
+#: admin/aplg-settings.php:90
+msgid "Enable"
 msgstr ""
 
 #: classes/class-aplg-logger.php:114

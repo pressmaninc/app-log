@@ -40,6 +40,9 @@ class Aplg_Settings {
 			'aplg_settings',
 			array( $this, 'render_options_page' )
 		);
+
+		// Include css file for settings
+		wp_enqueue_style( 'aplg-settings', plugin_dir_url( __DIR__ ) . 'assets/css/aplg-settings.css' );
 	}
 
 	/**
@@ -60,15 +63,17 @@ class Aplg_Settings {
 			__( 'Log Directory', 'aplg' ),
 			array( $this, 'render_log_directory_setting_field' ),
 			'aplg_settings',
-			'aplg_settings_section'
+			'aplg_settings_section',
+			array( 'class' => 'aplg_settings_label' ),
 		);
 
 		add_settings_field(
 			'enable_disable_maillog',
-			__( 'Enable/Disable Mail Log', 'aplg' ),
+			__( 'Log emails sent by WordPress', 'aplg' ),
 			array( $this, 'render_enable_disable_maillog' ),
 			'aplg_settings',
-			'aplg_settings_section'
+			'aplg_settings_section',
+			array( 'class' => 'aplg_settings_label' ),
 		);
 	}
 
@@ -85,7 +90,10 @@ class Aplg_Settings {
 	public function render_enable_disable_maillog() {
 		$options = get_option( 'aplg_settings' );
 		?>
-		<input type="checkbox" name="aplg_settings[enable_disable_maillog]" <?php checked( $options['enable_disable_maillog'], 1 ); ?>  value="1">
+		<label>
+			<input type="checkbox" name="aplg_settings[enable_disable_maillog]" <?php checked( $options? $options['enable_disable_maillog'] : 0, 1 ); ?>  value="1"> 
+			<?php echo __( 'Enable', 'aplg' ); ?>
+		</label>
 		<?php
 	}
 
