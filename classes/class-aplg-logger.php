@@ -64,6 +64,12 @@ class Aplg_Logger {
 
 		// Write to file
 		$log_file = realpath( $log_dir ) . '/' . $filename;
+
+		$pre = apply_filters( 'pre_applog_write', null, $log_message, $message, $log_level, $log_file );
+		if ( ! is_null( $pre ) ) {
+			return;
+		}
+
 		$fp       = fopen( $log_file, 'a' );
 		fwrite( $fp, $log_message );
 		fclose( $fp );
