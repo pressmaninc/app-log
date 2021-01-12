@@ -3,7 +3,7 @@
 Plugin Name: App Log
 Plugin URI:
 Description: A simple logger for debugging.
-Version: 1.1.1
+Version: 1.1.2
 Author: PRESSMAN
 Author URI: https://www.pressman.ne.jp/
 Text Domain: aplg

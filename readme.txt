@@ -2,9 +2,9 @@
 Contributors: pressmaninc, hiroshisekiguchi, kazunao, muraokashotaro, razelpaldo
 Tags: pressman, debug, log
 Requires at least: 5.2.2
-Tested up to: 5.4.2
+Tested up to: 5.6
 Requires PHP: 5.6.20
-Stable tag:　1.1.1
+Stable tag:　1.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,6 +20,9 @@ By default, log files are stored in */wp-content/plugins/app-log/applog* but log
 2. Activate the plugin through the Plugins menu in WordPress.
 
 == Changelog ==
+= 1.1.2 =
+* add hook 'pre_applog_write'
+
 = 1.1.1 =
 * bug fix on warning message displayed during password reset
 * updated Japanese translation and some field labels
