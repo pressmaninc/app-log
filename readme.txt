@@ -20,6 +20,11 @@ By default, log files are stored in */wp-content/plugins/app-log/applog* but log
 2. Activate the plugin through the Plugins menu in WordPress.
 
 == Changelog ==
+= 1.1.3 =
+* change the default log directory.
+* remove setting function in dashboard widget.
+* add hook 'app_log_add_dashboard_widget', 'app_log_path_to_log_dir', 'app_log_ouput_var_dump_mode', 'app_log_write_log_before', 'app_log_write_log_after'.
+
 = 1.1.2 =
 * add hook 'pre_applog_write'
 

@@ -1,13 +1,15 @@
 <?php
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 class Aplg_Settings {
-	const APLG_LOG_DIR                 = '/applog/';
+
+	// const LOG_DIR                      = '/applog/';
 	const LOG_AUTO_DELETE_MAX_LIFETIME = 7776000; // Valid for 90 days
 	const DELETE_KEY                   = 'aplg_delete';
+	const OUTPUT_VAR_DUMP_MODE         = false;
+	const READONLY_ATTR                = 'readonly="readonly"';
 
 	private static $instance;
 
@@ -37,43 +39,43 @@ class Aplg_Settings {
 			__( 'App Log Settings', 'aplg' ),
 			__( 'App Log', 'aplg' ),
 			'manage_options',
-			'aplg_settings',
+			App_Log::OPTION_KEY,
 			array( $this, 'render_options_page' )
 		);
 
 		// Include css file for settings
-		wp_enqueue_style( 'aplg-settings', plugin_dir_url( __DIR__ ) . 'assets/css/aplg-settings.css' );
+		wp_enqueue_style( App_Log::OPTION_KEY . '-setting', plugin_dir_url( __DIR__ ) . 'assets/css/aplg-settings.css' );
 	}
 
 	/**
 	 * Adds necessary fields for App Log settings
 	 */
 	public function init_settings() {
-		register_setting( 'aplg_settings', 'aplg_settings' );
+		register_setting( App_Log::OPTION_KEY, App_Log::OPTION_KEY );
 
 		add_settings_section(
-			'aplg_settings_section',
-			__( 'App Log Settings', 'aplg' ),
+			App_Log::OPTION_KEY . '_section',
+			'',
 			null,
-			'aplg_settings'
+			App_Log::OPTION_KEY,
 		);
 
 		add_settings_field(
 			'log_directory',
 			__( 'Log Directory', 'aplg' ),
 			array( $this, 'render_log_directory_setting_field' ),
-			'aplg_settings',
-			'aplg_settings_section',
-			array( 'class' => 'aplg_settings_label' ),
+			App_Log::OPTION_KEY,
+			App_Log::OPTION_KEY . '_section',
+			array( 'class' => App_Log::OPTION_KEY . '_label' ),
 		);
 
 		add_settings_field(
 			'enable_disable_maillog',
 			__( 'Log emails sent by WordPress', 'aplg' ),
 			array( $this, 'render_enable_disable_maillog' ),
-			'aplg_settings',
-			'aplg_settings_section',
-			array( 'class' => 'aplg_settings_label' ),
+			App_Log::OPTION_KEY,
+			App_Log::OPTION_KEY . '_section',
+			array( 'class' => App_Log::OPTION_KEY . '_label' ),
 		);
 	}
 
@@ -81,17 +83,19 @@ class Aplg_Settings {
 	 * Displays log directory field
 	 */
 	public function render_log_directory_setting_field() {
-		echo '<input type="text" name="aplg_settings[log_directory]" value="' . esc_attr( self::get_path_to_logdir() ) . '" style="width: 75%">';
+		$readonly = ( has_filter( 'app_log_path_to_log_dir' ) ) ? self::READONLY_ATTR : '';
+		echo '<input type="text" name="' . esc_attr( App_Log::OPTION_KEY ) . '[log_directory]" value="' . esc_attr( self::get_path_to_log_dir() ) . '"' . $readonly . '>';
 	}
 
 	/**
 	 * Displays field to enable/disable mail log
 	 */
 	public function render_enable_disable_maillog() {
-		$options = get_option( 'aplg_settings' );
+		$options = get_option( App_Log::OPTION_KEY );
+		$checked = ( ! empty( $options ) && isset( $options['enable_disable_maillog'] ) ) ? $options['enable_disable_maillog'] : 0;
 		?>
 		<label>
-			<input type="checkbox" name="aplg_settings[enable_disable_maillog]" <?php checked( $options? $options['enable_disable_maillog'] : 0, 1 ); ?>  value="1"> 
+			<input type="checkbox" name="<?php echo App_Log::OPTION_KEY; ?>[enable_disable_maillog]" <?php checked( $checked, 1 ); ?>  value="1"> 
 			<?php echo __( 'Enable', 'aplg' ); ?>
 		</label>
 		<?php
@@ -103,10 +107,12 @@ class Aplg_Settings {
 	public function render_options_page() {
 		?>
 		<div class="wrap">
+			<h1><?php echo __( 'App Log Settings', 'aplg' ); ?></h1>
+			<p class="description"><?php echo __('If a value has been overwritten using a filter hook, you cannot change the settings on this screen.', 'aplg' ); ?></p>
 			<form action='options.php' method='post'>
 				<?php
-				settings_fields( 'aplg_settings' );
-				do_settings_sections( 'aplg_settings' );
+				settings_fields( App_Log::OPTION_KEY );
+				do_settings_sections( App_Log::OPTION_KEY );
 				submit_button();
 				?>
 			</form>
@@ -121,13 +127,20 @@ class Aplg_Settings {
 	 *
 	 * @return string
 	 */
-	public static function get_path_to_logdir( $dirname = '' ) {
-		$dirname         = ( $dirname != '' ) ? $dirname : self::APLG_LOG_DIR;
-		$path_to_log_dir = dirname( __DIR__ ) . $dirname;
+	public static function get_path_to_log_dir( string $dirname = App_Log::LOG_DIR ):string {
+		$app = App_Log::get_instance();
+		$path_to_log_dir = $app->get_plugin_root_path() . $dirname;
 
-		// If log directory option is set, use it instead of APLG_LOG_DIR
-		$options         = get_option( 'aplg_settings' );
-		$path_to_log_dir = ( $options && $options['log_directory'] != '' ) ? $options['log_directory'] : $path_to_log_dir;
+		// If log directory option is set, use it instead of LOG_DIR
+		$options         = get_option( App_Log::OPTION_KEY );
+		$path_to_log_dir = ( $options && '' !== $options['log_directory'] ) ? (string) $options['log_directory'] : $path_to_log_dir;
+
+		/**
+		 * Filters the path for log directory.
+		 *
+		 * @param string $path_to_log_dir
+		 */
+		$path_to_log_dir = (string) apply_filters( 'app_log_path_to_log_dir', $path_to_log_dir );
 
 		return $path_to_log_dir;
 	}

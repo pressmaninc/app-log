@@ -3,7 +3,7 @@
 Plugin Name: App Log
 Plugin URI:
 Description: A simple logger for debugging.
-Version: 1.1.2
+Version: 1.1.3
 Author: PRESSMAN
 Author URI: https://www.pressman.ne.jp/
 Text Domain: aplg
@@ -19,11 +19,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once dirname( __FILE__ ) . '/app-log-functions.php';
 
 /**
- * Class App_Log
+ * Main class.
  */
 class App_Log {
 
 	private static $instance;
+
+	const PREFIX     = 'aplg_';
+	const OPTION_KEY = 'aplg_settings';
+	const LOG_DIR    = '/logs/';
 
 	/**
 	 * Plugin Class constructor
@@ -34,17 +38,20 @@ class App_Log {
 		require_once plugin_dir_path( __FILE__ ) . 'classes/class-aplg-logger.php';
 		require_once plugin_dir_path( __FILE__ ) . 'app-log-samples.php';
 
-		register_activation_hook( __FILE__, array( $this, 'set_applog_options' ) );
-		register_uninstall_hook( __FILE__, array( __CLASS__, 'remove_applog_options' ) );
+		register_activation_hook( __FILE__, array( $this, 'set_options' ) );
+		register_uninstall_hook( __FILE__, array( __CLASS__, 'remove_options' ) );
 
 		// Load text domain
-		add_action( 'init', array( $this, 'load_aplg_textdomain' ), 10 );
+		add_action( 'init', array( $this, 'load_textdomain' ), 10 );
+
 		// Allow other plugins to output log using 'applog' hook
 		add_action( 'applog', array( 'Aplg_Logger', 'log' ), 10, 3 );
 	}
 
 	/**
-	 * Getter for the class' instance
+	 * Returns the singleton instance of the class.
+	 *
+	 * @return static The singleton instance of the class.
 	 */
 	public static function get_instance() {
 		if ( ! isset( self::$instance ) ) {
@@ -54,36 +61,55 @@ class App_Log {
 	}
 
 	/**
-	 * プラグインを有効化する時にオプションを追加する
+	 * Set the default setting to option.
 	 *
 	 * @return void
 	 */
-	public function set_applog_options() {
-		$option = get_option( 'aplg_settings' );
+	public function set_options():void {
+		$option = get_option( self::OPTION_KEY );
 		if ( ! $option ) {
-			$default_settings = array(
-				'log_directory' => Aplg_Settings::get_path_to_logdir(),
-				'enable_disable_maillog' => 0,
-			);
-			update_option( 'aplg_settings', $default_settings );
+			update_option( self::OPTION_KEY, $this->get_default_setting() );
 		}
 	}
 
 	/**
-	 * Applog設定をオプションから削除
+	 * Remove the option setting.
 	 *
 	 * @return void
 	 */
-	public static function remove_applog_options() {
-		delete_option( 'aplg_settings' );
+	public static function remove_options():void {
+		delete_option( self::OPTION_KEY );
 	}
-	
+
 	/**
-	 * Loads the text domain for app log plugin
+	 * Loads the text domain.
 	 */
-	public function load_aplg_textdomain() {
+	public function load_textdomain() {
 		load_plugin_textdomain( 'aplg', false, basename( dirname( __FILE__ ) ) . '/lang' );
 	}
+
+	/**
+	 * Get path to plugin root.
+	 *
+	 * @return string
+	 */
+	public function get_plugin_root_path():string {
+		return dirname( __FILE__ );
+	}
+
+	/**
+	 * Get default setting.
+	 *
+	 * @return array
+	 */
+	public function get_default_setting():array {
+		$default = array(
+			'log_directory'          => Aplg_Settings::get_path_to_log_dir(),
+			'enable_disable_maillog' => 0,
+		);
+		return $default;
+	}
+
 }
 
 App_Log::get_instance();
