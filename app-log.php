@@ -61,11 +61,18 @@ class App_Log {
 	public function set_applog_options() {
 		$option = get_option( 'aplg_settings' );
 		if ( ! $option ) {
-			$default_settings = array(
-				'log_directory' => Aplg_Settings::get_path_to_logdir(),
-				'enable_disable_maillog' => 0,
-			);
-			update_option( 'aplg_settings', $default_settings );
+		
+			$default_settings = array();
+
+			if (defined('APPLOG_LOG_DIR')) {
+				$default_settings['log_directory'] = APPLOG_LOG_DIR;
+			} else {
+				$default_settings['log_directory'] = Aplg_Settings::get_path_to_logdir();
+			}
+
+			$default_settings['enable_disable_maillog'] = 0;
+
+			update_option('aplg_settings', $default_settings);
 		}
 	}
 
