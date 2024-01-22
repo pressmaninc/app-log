@@ -138,6 +138,10 @@ class Aplg_Settings {
 	 * @return int
 	 */
 	public static function get_log_lifetime() {
+		// Global variable APPLOG_AUTO_DELETE_MAX_LIFETIME can be used to override the default value
+		if (defined('APPLOG_AUTO_DELETE_MAX_LIFETIME')) {
+			return APPLOG_AUTO_DELETE_MAX_LIFETIME;
+		}
 		return self::LOG_AUTO_DELETE_MAX_LIFETIME;
 	}
 }
