@@ -54,6 +54,11 @@ class Aplg_Logger {
 
 		$filename = date_i18n( 'Ymd' ) . $log_file_ext;
 		$log_dir  = Aplg_Settings::get_path_to_logdir( $dirname );
+		
+		// set log directory from global variable
+		if (define('APPLOG_LOG_DIR')) {
+			$log_dir = APPLOG_LOG_FILE_NAME;
+		}
 
 		// Create directory if it doesn't exist
 		if ( realpath( $log_dir ) === false || ! is_dir( $log_dir ) ) {
