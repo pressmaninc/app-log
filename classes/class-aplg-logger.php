@@ -44,7 +44,14 @@ class Aplg_Logger {
 			$log_message .= '(Process ID: ' . $process_id . ') ';
 		}
 		$log_message .= $message . "\n";
+		
 		$log_file_ext = apply_filters( 'app_log_file_ext', self::ALLOWED_FILE_EXT['LOG'] );
+
+		// If the extension is specified in the constant, use it
+		if (defined('APPLOG_FILE_EXTENTION')) {
+			$log_file_ext = apply_filters( 'app_log_file_ext', self::ALLOWED_FILE_EXT[APPLOG_FILE_EXTENTION] );
+		}
+
 		if ( strpos( $log_file_ext, '.' ) !== 0 ) {
 			$log_file_ext = '.' . $log_file_ext;
 		}
@@ -53,6 +60,12 @@ class Aplg_Logger {
 		}
 
 		$filename = date_i18n( 'Ymd' ) . $log_file_ext;
+
+		// If the file name format is specified in the constant, use it
+		if (defined('APPLOG_FILENAME_FORMAT')) {
+			$filename = date_i18n( APPLOG_FILENAME_FORMAT ) . $log_file_ext;
+		}
+
 		$log_dir  = Aplg_Settings::get_path_to_logdir( $dirname );
 
 		// Create directory if it doesn't exist
