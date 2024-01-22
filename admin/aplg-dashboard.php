@@ -39,6 +39,15 @@ class Aplg_Dashboard {
 	 * Displays log file list & links in dashboard
 	 */
 	public function add_dashboard_widget() {
+		// Check if widget should be displayed
+		$is_widget_show = true;
+		if (defined('APPLOG_DASHBOARD_WIDGET_SHOW')) {
+			$is_widget_show = APPLOG_DASHBOARD_WIDGET_SHOW;
+		}
+		if (!$is_widget_show) {
+			return;
+		}
+		
 		if ( ! current_user_can( 'administrator' ) ) {
 			return;
 		}
