@@ -38,7 +38,7 @@ class Aplg_Logger {
 			$message = print_r( $message, true );
 		}
 
-		$log_message = '[' . format_date_by_wp_version( 'Y-m-d H:i:s' ) . '] [' . str_pad( $log_level, 5, ' ' ) . '] ';
+		$log_message = '[' . self::format_date_by_wp_version( 'Y-m-d H:i:s' ) . '] [' . str_pad( $log_level, 5, ' ' ) . '] ';
 		$process_id  = getmypid();
 		if ( $process_id ) {
 			$log_message .= '(Process ID: ' . $process_id . ') ';
@@ -59,11 +59,11 @@ class Aplg_Logger {
 			$log_file_ext = self::ALLOWED_FILE_EXT['LOG'];
 		}
 
-		$filename = format_date_by_wp_version( 'Ymd' ) . $log_file_ext;
+		$filename = self::format_date_by_wp_version( 'Ymd' ) . $log_file_ext;
 
 		// If the file name format is specified in the constant, use it
 		if (defined('APPLOG_FILENAME_FORMAT')) {
-			$filename = format_date_by_wp_version( APPLOG_FILENAME_FORMAT ) . $log_file_ext;
+			$filename = self::format_date_by_wp_version( APPLOG_FILENAME_FORMAT ) . $log_file_ext;
 		}
 
 		$log_dir  = Aplg_Settings::get_path_to_logdir( $dirname );
@@ -148,11 +148,11 @@ class Aplg_Logger {
 		}
 	}
 
-	private function format_date_by_wp_version($format = 'Y-m-d H:i:s') {
-		if ( version_compare( $GLOBALS['wp_version'], '5.3', '<' ) ) {
-			return date_i18n( $format );
+	public static function format_date_by_wp_version($format) {
+		if ( version_compare($GLOBALS['wp_version'], '5.3', '<' ) ) {
+			return date_i18n($format);
 		} else {
-			return wp_date( $format );
+			return wp_date($format);
 		}
 	}
 }
