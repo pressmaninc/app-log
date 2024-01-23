@@ -153,8 +153,6 @@ class Aplg_Settings {
 	public static function get_log_lifetime() {
 		/**
 		 * Filters the maximum lifetime of log.
-		 *
-		 * @param int $log_lifetime
 		 */
 		$log_lifetime = (int) apply_filters( 'app_log_log_lifetime', self::LOG_AUTO_DELETE_MAX_LIFETIME );
 		return $log_lifetime;

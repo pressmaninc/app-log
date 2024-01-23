@@ -47,8 +47,6 @@ class Aplg_Logger {
 
 		/**
 		 * Filters the file extension of log.
-		 *
-		 * @param string $log_file_ext
 		 */
 		$log_file_ext = apply_filters( 'app_log_file_ext', self::ALLOWED_FILE_EXT['LOG'] );
 		if ( strpos( $log_file_ext, '.' ) !== 0 ) {
@@ -61,8 +59,6 @@ class Aplg_Logger {
 
 		/**
 		 * Filters format of date.
-		 *
-		 * @param int $log_lifetime
 		 */
 		$format = apply_filters( 'app_log_date_format', 'Ymd' );
 
@@ -135,8 +131,9 @@ class Aplg_Logger {
 	 * Delete old logs in the specified directory in bulk.
 	 *
 	 * @param string $log_dir
+	 * @return void
 	 */
-	public static function log_auto_delete( $log_dir ) {
+	public static function log_auto_delete( $log_dir ): void {
 		// Check if auto-delete will be performed or not
 		$rand = rand( 1, 100 );
 		if ( $rand > self::LOG_AUTO_DELETE_PROBABILITY ) {
@@ -195,6 +192,10 @@ class Aplg_Logger {
 	 * @return string
 	 */
 	public static function prepare_message( mixed $message ): string {
+		/*
+		 * If the message is an array or an object, convert it to a string.
+		 * If the message is a string, return it as is.
+		 */
 		$var_dump_mode = apply_filters( 'app_log_ouput_var_dump_mode', Aplg_Settings::OUTPUT_VAR_DUMP_MODE );
 
 		if ( ! $var_dump_mode ) {
@@ -212,6 +213,7 @@ class Aplg_Logger {
 	 * Format date by WP version
 	 *
 	 * @param string $format
+	 * @return string
 	 */
 	public static function format_date_by_wp_version( $format ): string {
 		if ( version_compare( $GLOBALS['wp_version'], '5.3', '<' ) ) {
