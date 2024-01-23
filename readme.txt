@@ -21,9 +21,10 @@ By default, log files are stored in */wp-content/plugins/app-log/applog* but log
 
 == Changelog ==
 = 1.1.4 =
-* change the default log life time.
-* custom log filename's format and extention of file 
-* add hook 'app_log_date_format', 'app_log_log_lifetime'.
+* custom log life time
+* custom log filename's format
+* format date using date_i18n or wp_date decided by WP's version
+* add filter hook 'app_log_date_format', 'app_log_log_lifetime' to override the default value.
 
 = 1.1.3 =
 * change the default log directory.

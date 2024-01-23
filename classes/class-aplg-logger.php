@@ -213,7 +213,7 @@ class Aplg_Logger {
 	 *
 	 * @param string $format
 	 */
-	public static function format_date_by_wp_version($format) {
+	public static function format_date_by_wp_version($format):string {
 		if ( version_compare($GLOBALS['wp_version'], '5.3', '<' ) ) {
 			return date_i18n($format);
 		} else {
