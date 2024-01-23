@@ -38,7 +38,7 @@ class Aplg_Logger {
 
 		$message = self::prepare_message( $org_message );
 
-		$log_header = '[' . date_i18n( 'Y-m-d H:i:s' ) . '] [' . str_pad( $log_level, 5, ' ' ) . '] ';
+		$log_header = '[' . self::format_date_by_wp_version( 'Y-m-d H:i:s' ) . '] [' . str_pad( $log_level, 5, ' ' ) . '] ';
 		$process_id = getmypid();
 		if ( $process_id ) {
 			$log_header .= '(PID: ' . $process_id . ') ';
@@ -59,7 +59,7 @@ class Aplg_Logger {
 			$log_file_ext = self::ALLOWED_FILE_EXT['LOG'];
 		}
 
-		$filename = date_i18n( 'Ymd' ) . $log_file_ext;
+		$filename = self::format_date_by_wp_version( 'Ymd' ) . $log_file_ext;
 		$log_dir  = Aplg_Settings::get_path_to_log_dir( $dirname );
 
 		// Create directory if it doesn't exist
@@ -199,5 +199,19 @@ class Aplg_Logger {
 		}
 
 		return $message;
+	}
+
+	public static function format_date_by_wp_version($format) {
+		/**
+		 * Filters format of date.
+		 *
+		 * @param int $log_lifetime
+		 */
+		$format = apply_filters('app_log_date_format', $format);
+		if ( version_compare($GLOBALS['wp_version'], '5.3', '<' ) ) {
+			return date_i18n($format);
+		} else {
+			return wp_date($format);
+		}
 	}
 }

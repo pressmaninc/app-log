@@ -20,6 +20,11 @@ By default, log files are stored in */wp-content/plugins/app-log/applog* but log
 2. Activate the plugin through the Plugins menu in WordPress.
 
 == Changelog ==
+= 1.1.4 =
+* change the default log life time.
+* custom log filename's format and extention of file 
+* add hook 'app_log_date_format', 'app_log_log_lifetime'.
+
 = 1.1.3 =
 * change the default log directory.
 * remove setting function in dashboard widget.
