@@ -11,7 +11,7 @@ if ( ! class_exists( 'Aplg_Settings' ) ) {
 class Aplg_Logger {
 	const LOG_AUTO_DELETE_PROBABILITY = 10; // Auto-delete will be run within 10% probabiliïty
 
-	const LOG_LEVEL                   = array(
+	const LOG_LEVEL = array(
 		'TRACE_LOG' => 'TRACE',
 		'DEBUG_LOG' => 'DEBUG',
 		'INFO_LOG'  => 'INFO',
@@ -20,7 +20,7 @@ class Aplg_Logger {
 		'FATAL_LOG' => 'FATAL',
 	);
 
-	const ALLOWED_FILE_EXT            = array(
+	const ALLOWED_FILE_EXT = array(
 		'LOG' => '.log',
 		'TXT' => '.txt',
 	);
@@ -38,7 +38,7 @@ class Aplg_Logger {
 
 		$message = self::prepare_message( $org_message );
 
-		$log_header = '[' . date_i18n( 'Y-m-d H:i:s' ) . '] [' . str_pad( $log_level, 5, ' ' ) . '] ';
+		$log_header = '[' . self::format_date_by_wp_version( 'Y-m-d H:i:s' ) . '] [' . str_pad( $log_level, 5, ' ' ) . '] ';
 		$process_id = getmypid();
 		if ( $process_id ) {
 			$log_header .= '(PID: ' . $process_id . ') ';
@@ -47,8 +47,6 @@ class Aplg_Logger {
 
 		/**
 		 * Filters the file extension of log.
-		 *
-		 * @param string $log_file_ext
 		 */
 		$log_file_ext = apply_filters( 'app_log_file_ext', self::ALLOWED_FILE_EXT['LOG'] );
 		if ( strpos( $log_file_ext, '.' ) !== 0 ) {
@@ -59,8 +57,14 @@ class Aplg_Logger {
 			$log_file_ext = self::ALLOWED_FILE_EXT['LOG'];
 		}
 
-		$filename = date_i18n( 'Ymd' ) . $log_file_ext;
-		$log_dir  = Aplg_Settings::get_path_to_log_dir( $dirname );
+		/**
+		 * Filters format of date.
+		 */
+		$format = apply_filters( 'app_log_date_format', 'Ymd' );
+
+		$filename = self::format_date_by_wp_version( $format ) . $log_file_ext;
+
+		$log_dir = Aplg_Settings::get_path_to_log_dir( $dirname );
 
 		// Create directory if it doesn't exist
 		if ( realpath( $log_dir ) === false || ! is_dir( $log_dir ) ) {
@@ -127,8 +131,9 @@ class Aplg_Logger {
 	 * Delete old logs in the specified directory in bulk.
 	 *
 	 * @param string $log_dir
+	 * @return void
 	 */
-	public static function log_auto_delete( $log_dir ) {
+	public static function log_auto_delete( $log_dir ): void {
 		// Check if auto-delete will be performed or not
 		$rand = rand( 1, 100 );
 		if ( $rand > self::LOG_AUTO_DELETE_PROBABILITY ) {
@@ -186,7 +191,11 @@ class Aplg_Logger {
 	 * @param mixed $message
 	 * @return string
 	 */
-	public static function prepare_message( mixed $message ):string {
+	public static function prepare_message( mixed $message ): string {
+		/*
+		 * If the message is an array or an object, convert it to a string.
+		 * If the message is a string, return it as is.
+		 */
 		$var_dump_mode = apply_filters( 'app_log_ouput_var_dump_mode', Aplg_Settings::OUTPUT_VAR_DUMP_MODE );
 
 		if ( ! $var_dump_mode ) {
@@ -199,5 +208,18 @@ class Aplg_Logger {
 		}
 
 		return $message;
+	}
+	/**
+	 * Format date by WP version
+	 *
+	 * @param string $format
+	 * @return string
+	 */
+	public static function format_date_by_wp_version( $format ): string {
+		if ( version_compare( $GLOBALS['wp_version'], '5.3', '<' ) ) {
+			return date_i18n( $format );
+		} else {
+			return wp_date( $format );
+		}
 	}
 }

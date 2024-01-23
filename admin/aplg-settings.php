@@ -108,7 +108,7 @@ class Aplg_Settings {
 		?>
 		<div class="wrap">
 			<h1><?php echo __( 'App Log Settings', 'aplg' ); ?></h1>
-			<p class="description"><?php echo __('If a value has been overwritten using a filter hook, you cannot change the settings on this screen.', 'aplg' ); ?></p>
+			<p class="description"><?php echo __( 'If a value has been overwritten using a filter hook, you cannot change the settings on this screen.', 'aplg' ); ?></p>
 			<form action='options.php' method='post'>
 				<?php
 				settings_fields( App_Log::OPTION_KEY );
@@ -127,8 +127,8 @@ class Aplg_Settings {
 	 *
 	 * @return string
 	 */
-	public static function get_path_to_log_dir( string $dirname = App_Log::LOG_DIR ):string {
-		$app = App_Log::get_instance();
+	public static function get_path_to_log_dir( string $dirname = App_Log::LOG_DIR ): string {
+		$app             = App_Log::get_instance();
 		$path_to_log_dir = $app->get_plugin_root_path() . $dirname;
 
 		// If log directory option is set, use it instead of LOG_DIR
@@ -151,7 +151,11 @@ class Aplg_Settings {
 	 * @return int
 	 */
 	public static function get_log_lifetime() {
-		return self::LOG_AUTO_DELETE_MAX_LIFETIME;
+		/**
+		 * Filters the maximum lifetime of log.
+		 */
+		$log_lifetime = (int) apply_filters( 'app_log_log_lifetime', self::LOG_AUTO_DELETE_MAX_LIFETIME );
+		return $log_lifetime;
 	}
 }
 
