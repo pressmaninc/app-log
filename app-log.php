@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once dirname( __FILE__ ) . '/app-log-functions.php';
+require_once __DIR__ . '/app-log-functions.php';
 
 /**
  * Main class.
@@ -65,7 +65,7 @@ class App_Log {
 	 *
 	 * @return void
 	 */
-	public function set_options():void {
+	public function set_options() {
 		$option = get_option( self::OPTION_KEY );
 		if ( ! $option ) {
 			update_option( self::OPTION_KEY, $this->get_default_setting() );
@@ -77,7 +77,7 @@ class App_Log {
 	 *
 	 * @return void
 	 */
-	public static function remove_options():void {
+	public static function remove_options() {
 		delete_option( self::OPTION_KEY );
 	}
 
@@ -85,7 +85,7 @@ class App_Log {
 	 * Loads the text domain.
 	 */
 	public function load_textdomain() {
-		load_plugin_textdomain( 'aplg', false, basename( dirname( __FILE__ ) ) . '/lang' );
+		load_plugin_textdomain( 'aplg', false, basename( __DIR__ ) . '/lang' );
 	}
 
 	/**
@@ -93,8 +93,8 @@ class App_Log {
 	 *
 	 * @return string
 	 */
-	public function get_plugin_root_path():string {
-		return dirname( __FILE__ );
+	public function get_plugin_root_path(): string {
+		return __DIR__;
 	}
 
 	/**
@@ -102,14 +102,13 @@ class App_Log {
 	 *
 	 * @return array
 	 */
-	public function get_default_setting():array {
+	public function get_default_setting(): array {
 		$default = array(
 			'log_directory'          => Aplg_Settings::get_path_to_log_dir(),
 			'enable_disable_maillog' => 0,
 		);
 		return $default;
 	}
-
 }
 
 App_Log::get_instance();
