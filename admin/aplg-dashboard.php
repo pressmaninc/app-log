@@ -103,8 +103,8 @@ class Aplg_Dashboard {
 					}
 
 					$list[] = '<li>' . $file_display
-							  . '<span class="delete_btn"><a href="' . $url_for_delete_log_dir . urlencode( $file ) . '">' . $delete_label . '</a></span>'
-							  . '</li>';
+								. '<span class="delete_btn"><a href="' . $url_for_delete_log_dir . urlencode( $file ) . '">' . $delete_label . '</a></span>'
+								. '</li>';
 				}
 			}
 		}
@@ -123,7 +123,7 @@ class Aplg_Dashboard {
 	 * @param string $log_dir
 	 * @return void
 	 */
-	public function show_content( $list, string $log_dir ):void {
+	public function show_content( $list, string $log_dir ): void {
 		$html = '';
 		if ( is_array( $list ) ) {
 			$html = '<ul>' . "\n" . implode( "\n", $list ) . "\n" . '</ul>' . "\n";
@@ -146,7 +146,7 @@ class Aplg_Dashboard {
 	 *
 	 * @return void
 	 */
-	public function delete_log():void {
+	public function delete_log() {
 		$delete_result = array();
 
 		if ( ! current_user_can( 'administrator' ) ) {
