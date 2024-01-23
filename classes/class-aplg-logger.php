@@ -11,7 +11,7 @@ if ( ! class_exists( 'Aplg_Settings' ) ) {
 class Aplg_Logger {
 	const LOG_AUTO_DELETE_PROBABILITY = 10; // Auto-delete will be run within 10% probabiliïty
 
-	const LOG_LEVEL                   = array(
+	const LOG_LEVEL = array(
 		'TRACE_LOG' => 'TRACE',
 		'DEBUG_LOG' => 'DEBUG',
 		'INFO_LOG'  => 'INFO',
@@ -20,7 +20,7 @@ class Aplg_Logger {
 		'FATAL_LOG' => 'FATAL',
 	);
 
-	const ALLOWED_FILE_EXT            = array(
+	const ALLOWED_FILE_EXT = array(
 		'LOG' => '.log',
 		'TXT' => '.txt',
 	);
@@ -64,11 +64,11 @@ class Aplg_Logger {
 		 *
 		 * @param int $log_lifetime
 		 */
-		$format = apply_filters('app_log_date_format', 'Ymd');
+		$format = apply_filters( 'app_log_date_format', 'Ymd' );
 
 		$filename = self::format_date_by_wp_version( $format ) . $log_file_ext;
-		
-		$log_dir  = Aplg_Settings::get_path_to_log_dir( $dirname );
+
+		$log_dir = Aplg_Settings::get_path_to_log_dir( $dirname );
 
 		// Create directory if it doesn't exist
 		if ( realpath( $log_dir ) === false || ! is_dir( $log_dir ) ) {
@@ -194,7 +194,7 @@ class Aplg_Logger {
 	 * @param mixed $message
 	 * @return string
 	 */
-	public static function prepare_message( mixed $message ):string {
+	public static function prepare_message( mixed $message ): string {
 		$var_dump_mode = apply_filters( 'app_log_ouput_var_dump_mode', Aplg_Settings::OUTPUT_VAR_DUMP_MODE );
 
 		if ( ! $var_dump_mode ) {
@@ -213,11 +213,11 @@ class Aplg_Logger {
 	 *
 	 * @param string $format
 	 */
-	public static function format_date_by_wp_version($format):string {
-		if ( version_compare($GLOBALS['wp_version'], '5.3', '<' ) ) {
-			return date_i18n($format);
+	public static function format_date_by_wp_version( $format ): string {
+		if ( version_compare( $GLOBALS['wp_version'], '5.3', '<' ) ) {
+			return date_i18n( $format );
 		} else {
-			return wp_date($format);
+			return wp_date( $format );
 		}
 	}
 }
