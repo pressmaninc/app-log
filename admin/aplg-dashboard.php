@@ -18,7 +18,7 @@ class Aplg_Dashboard {
 	 */
 	private function __construct() {
 		// Dashboard widget display
-		add_action( 'wp_dashboard_setup', array( $this, 'add_dashboard_widget' ), 10 );
+		add_action( 'wp_dashboard_setup', array( $this, 'register' ), 10 );
 		// Log Deletion
 		add_action( 'admin_init', array( $this, 'delete_log' ), 10 );
 		// Successful Log Deletion notification
@@ -36,25 +36,33 @@ class Aplg_Dashboard {
 	}
 
 	/**
-	 * Displays log file list & links in dashboard
+	 * Register dashboard widget.
 	 */
-	public function add_dashboard_widget() {
+	public function register() {
 		if ( ! current_user_can( 'administrator' ) ) {
+			return;
+		}
+
+		/**
+		 * Filters the flag which decide wether the dashboard widget will be shown or not.
+		 *
+		 * @param boolian $flag
+		 */
+		if ( false === apply_filters( 'app_log_add_dashboard_widget', true ) ) {
 			return;
 		}
 
 		wp_add_dashboard_widget(
 			'aplg_widget',
 			__( 'App Log', 'aplg' ),
-			array( $this, 'display_log_widget' ),
-			array( $this, 'widget_handle' )
+			array( $this, 'display' ),
 		);
 	}
 
 	/**
 	 * Prepares the contents to be displayed in the Dashboard Widget
 	 */
-	public function display_log_widget() {
+	public function display() {
 		// Include javascript file for dashbord
 		wp_enqueue_script( 'aplg-dashboard', plugin_dir_url( __DIR__ ) . 'assets/js/aplg-dashboard.js', array( 'jquery' ), null, true );
 		wp_localize_script(
@@ -67,7 +75,7 @@ class Aplg_Dashboard {
 		// Include css file for dashboard
 		wp_enqueue_style( 'aplg-dashboard', plugin_dir_url( __DIR__ ) . 'assets/css/aplg-dashboard.css' );
 
-		$path_to_log_dir = Aplg_Settings::get_path_to_logdir();
+		$path_to_log_dir = Aplg_Settings::get_path_to_log_dir();
 		$path_to_log_dir = realpath( $path_to_log_dir ) ?: $path_to_log_dir;
 		$list_html       = '';
 
@@ -82,6 +90,7 @@ class Aplg_Dashboard {
 			$url_for_delete_log_dir = wp_nonce_url( admin_url( '/' ), Aplg_Settings::DELETE_KEY ) . '&' . Aplg_Settings::DELETE_KEY . '=';
 			$delete_label           = __( 'Delete', 'aplg' );
 
+			// Get the log list & prepare html.
 			$files = scandir( $path_to_log_dir );
 			$list  = array();
 			foreach ( $files as $file ) {
@@ -98,78 +107,46 @@ class Aplg_Dashboard {
 							  . '</li>';
 				}
 			}
-			$list_html = implode( "\n", $list );
 		}
 
-		if ( $list_html === '' ) {
-			$list_html = '<span>' . __( 'No logs found.', 'aplg' ) . '</span>';
+		if ( empty( $list ) ) {
+			$list = '<span>' . __( 'No logs found.', 'aplg' ) . '</span>';
 		}
 
-		self::create_widget( $list_html, $path_to_log_dir );
+		self::show_content( $list, $path_to_log_dir );
 	}
 
 	/**
-	 * Displays widget
+	 * Show content of the widget.
+	 *
+	 * @param mixed  $list
+	 * @param string $log_dir
+	 * @return void
 	 */
-	public function create_widget( $list_html, $log_dir ) {
+	public function show_content( $list, string $log_dir ):void {
+		$html = '';
+		if ( is_array( $list ) ) {
+			$html = '<ul>' . "\n" . implode( "\n", $list ) . "\n" . '</ul>' . "\n";
+		} else {
+			$html = $list;
+		}
+
 		?>
-		<div class='path_to_aplg_logdir_class_wrap'>
+		<div class='wrapper'>
 			<p><?php _e( 'Log File List', 'aplg' ); ?><br/>(<?php echo __( 'Path', 'aplg' ) . ': ' . esc_html( $log_dir ); ?>)</p>
-			<ul>
-				<?php echo $list_html; ?>
-			</ul>
+			<?php echo $html; ?>
 		</div>
 		<?php
 	}
 
 	/**
-	 * Displays needed configuration for the widget
+	 * Delete the selected log file.
+	 *
+	 * TODO: Implement deletion using AJAX.
+	 *
+	 * @return void
 	 */
-	public function widget_handle() {
-		// get saved data
-		if ( ! $widget_options = get_option( 'aplg_settings' ) ) {
-			$widget_options = array();
-		}
-
-		// process update
-		if ( 'POST' == $_SERVER['REQUEST_METHOD'] && isset( $_POST['aplg_settings'] ) ) {
-			// minor validation
-			$widget_options['log_directory'] = sanitize_text_field( $_POST['aplg_settings']['log_directory'] );
-			// save update
-			update_option( 'aplg_settings', $widget_options );
-		}
-
-		// set defaults
-		if ( ! isset( $widget_options['log_directory'] ) ) {
-			$widget_options['log_directory'] = '';
-		}
-
-		$output = sprintf(
-			'<input type="text" value="%s" name="aplg_settings[log_directory]" style="width:100%%">',
-			esc_attr( $widget_options['log_directory'] )
-		);
-
-		$configuration_description = __( 'Set path to where the application logs are stored', 'aplg' );
-		echo "<p><strong>$configuration_description</strong><br/ >";
-
-		if ( $widget_options['log_directory'] == '' ) {
-			$path_to_log_dir = Aplg_Settings::get_path_to_logdir();
-			$path_to_log_dir = realpath( $path_to_log_dir ) ?: $path_to_log_dir;
-			echo sprintf(
-				__( '※No need to set if default path will be used. (Default Path: %s)', 'aplg' ),
-				esc_html( $path_to_log_dir )
-			);
-		}
-
-		echo "<div class='log_directory_class_wrap'>"
-			 . $output
-			 . '</div>';
-	}
-
-	/**
-	 * Deletes selected log
-	 */
-	public function delete_log() {
+	public function delete_log():void {
 		$delete_result = array();
 
 		if ( ! current_user_can( 'administrator' ) ) {
@@ -223,7 +200,7 @@ class Aplg_Dashboard {
 
 		$deleted_log = urldecode( $_GET [ Aplg_Settings::DELETE_KEY . '_done' ] );
 		// Data from GET not sanitized but decoded instead since the correct filename is needed to confirm if file is correctly deleted or not
-		$log_dir   = realpath( Aplg_Settings::get_path_to_logdir() );
+		$log_dir   = realpath( Aplg_Settings::get_path_to_log_dir() );
 		$file_path = $log_dir . '/' . $deleted_log;
 		if ( $log_dir !== false && ! file_exists( $file_path ) ) {
 			self::$notices = array(
